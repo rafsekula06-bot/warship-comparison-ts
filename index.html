@@ -165,6 +165,52 @@
       opacity: 0.7;
     }
 
+    /* stat rows */
+    .stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr 1fr;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 2px;
+    }
+
+    .stat-bar-wrapper {
+      height: 6px;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(30, 64, 175, 0.6);
+      position: relative;
+    }
+
+    .stat-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-soft), var(--accent));
+      width: 0%;
+      transition: width 0.2s ease-out;
+    }
+
+    .stat-value {
+      font-size: 0.8rem;
+      text-align: right;
+    }
+
+    .stat-value.win {
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .stat-value.lose {
+      color: var(--danger);
+      opacity: 0.8;
+    }
+
     .controls {
       margin-top: 10px;
       display: flex;
@@ -349,6 +395,20 @@
       max-height: 160px;
     }
 
+    /* built-in placeholder if no real image is set */
+    .ship-image-placeholder {
+      width: 100%;
+      max-height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      background: radial-gradient(circle at top, #1f2937, #020617);
+      padding: 16px;
+      text-align: center;
+    }
+
     @media (max-width: 850px) {
       .duel-images {
         grid-template-columns: 1fr;
@@ -405,7 +465,7 @@
             <div class="panel-title">Outcome & Analysis</div>
           </div>
 
-          <!-- new image-vs-image block -->
+          <!-- image-vs-image block -->
           <div id="duelImages" class="duel-images"></div>
 
           <div id="comparisonStats"></div>
@@ -966,7 +1026,6 @@
       shipSelectA.innerHTML = optionsHtml;
       shipSelectB.innerHTML = optionsHtml;
 
-      // defaults
       shipSelectA.value = "bismarck";
       shipSelectB.value = "iowa";
     }
@@ -979,6 +1038,7 @@
       const shipA = getShipById(shipSelectA.value);
       const shipB = getShipById(shipSelectB.value);
 
+      // info cards
       const cardHtml = (ship, label) => {
         if (!ship) return "";
         return `
@@ -1000,29 +1060,27 @@
 
       shipInfoGrid.innerHTML = cardHtml(shipA, "A") + cardHtml(shipB, "B");
 
-      // image vs image
+      // image vs image (no external URLs, built-in placeholder)
       const imageCard = (ship, label) => {
         if (!ship) return "";
-        const imgSrc =
-          ship.image ||
-          `https://via.placeholder.com/400x200?text=${encodeURIComponent(
-            ship.name
-          )}`;
+        const content = ship.image
+          ? `<img src="${ship.image}" alt="${ship.name}" class="ship-image" />`
+          : `<div class="ship-image-placeholder">${ship.name}</div>`;
         return `
           <div class="duel-image-card">
             <div class="duel-image-label">${label}</div>
             <div class="ship-image-wrapper">
-              <img src="${imgSrc}" alt="${ship.name}" class="ship-image" />
+              ${content}
             </div>
           </div>
         `;
       };
 
-      duelImages.innerHTML = imageCard(shipA, "Ship A") + imageCard(shipB, "Ship B");
+      duelImages.innerHTML =
+        imageCard(shipA, "Ship A") + imageCard(shipB, "Ship B");
     }
 
     function computeScore(ship) {
-      // Firepower & armor matter most, then AA/tech/speed
       return (
         ship.firepower * 2 +
         ship.armor * 2 +
@@ -1059,7 +1117,6 @@
       const loserScore = Math.min(scoreA, scoreB);
       const diff = Math.round((winnerScore - loserScore) * 10) / 10;
 
-      // Stat comparison
       const stats = [
         { key: "firepower", label: "Firepower" },
         { key: "armor", label: "Protection / Armor" },
@@ -1096,13 +1153,13 @@
 
           return `
           <div class="stats-row">
-            <div class="stat-value ${aClass}">
+            <div class="${aClass}">
               ${shipA.name.split(" ")[1] || "A"}: ${aVal}
             </div>
             <div>
               <div class="stat-label">${stat.label}</div>
               <div class="stat-bar-wrapper">
-                <div class="stat-bar" style="width:${aWidth}%; opacity:0.5;"></div>
+                <div class="stat-bar" style="width:${aWidth}%; opacity:0.55;"></div>
                 <div class="stat-bar" style="width:${bWidth}%; transform: translateY(-100%);"></div>
               </div>
             </div>
@@ -1116,7 +1173,6 @@
 
       comparisonStats.innerHTML = statRowsHtml;
 
-      // Why is the winner better?
       const reasons = [];
 
       function addReason(statKey, label, flavourText) {
@@ -1193,7 +1249,6 @@
         </div>
       `;
 
-      // Optional scenario generator
       const scenario = buildScenario(winner, loser);
       scenarioBox.innerHTML = `
         <div class="optional-scenario">
@@ -1272,7 +1327,6 @@
         `;
       }
 
-      // Generic fallback
       return `
         In ${rand(
           weathers
@@ -1284,7 +1338,6 @@
       `;
     }
 
-    // Swap ships
     function swapShips() {
       const temp = shipSelectA.value;
       shipSelectA.value = shipSelectB.value;
