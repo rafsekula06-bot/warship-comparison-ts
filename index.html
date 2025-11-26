@@ -1,0 +1,929 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Warship Comparison App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #050816;
+      --card: #0f172a;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.2);
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --danger: #f97373;
+      --success: #4ade80;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      background: radial-gradient(circle at top, #0f172a, #020617 55%, #000);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    .card {
+      background: linear-gradient(145deg, #020617, #020617, #020617ee);
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: 0 24px 60px rgba(15, 23, 42, 0.9);
+      padding: 20px;
+      backdrop-filter: blur(10px);
+    }
+
+    h1 {
+      font-size: 1.7rem;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h1 span.icon {
+      font-size: 1.4rem;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.1fr 1.3fr;
+      gap: 18px;
+    }
+
+    @media (max-width: 850px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .panel {
+      background: radial-gradient(circle at top left, #020617, #020617e6);
+      border-radius: 14px;
+      padding: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+
+    .panel-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+      display: inline-block;
+    }
+
+    select {
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: #020617;
+      color: var(--text-main);
+      font-size: 0.95rem;
+      outline: none;
+    }
+
+    select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.45);
+    }
+
+    .ship-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .ship-card {
+      background: #020617;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      padding: 10px;
+      font-size: 0.85rem;
+    }
+
+    .ship-name {
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+
+    .ship-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.8);
+      font-size: 0.75rem;
+      margin-right: 4px;
+      border: 1px solid rgba(148, 163, 184, 0.4);
+    }
+
+    .pill span {
+      opacity: 0.7;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr 1fr;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .stat-bar-wrapper {
+      height: 6px;
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(30, 64, 175, 0.6);
+    }
+
+    .stat-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-soft), var(--accent));
+      width: 0%;
+      transition: width 0.2s ease-out;
+    }
+
+    .stat-value {
+      font-size: 0.8rem;
+      text-align: right;
+    }
+
+    .stat-value.win {
+      color: var(--success);
+      font-weight: 600;
+    }
+
+    .stat-value.lose {
+      color: var(--danger);
+      opacity: 0.8;
+    }
+
+    .controls {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.1s ease, box-shadow 0.1s ease,
+        background 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #0ea5e9, #22c55e);
+      color: #0b1120;
+      font-weight: 600;
+      box-shadow: 0 12px 30px rgba(34, 197, 94, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px) scale(0.99);
+      box-shadow: 0 6px 18px rgba(34, 197, 94, 0.4);
+    }
+
+    .btn-ghost {
+      background: rgba(15, 23, 42, 0.95);
+      color: var(--text-muted);
+      border: 1px solid rgba(148, 163, 184, 0.35);
+    }
+
+    .btn-ghost:hover {
+      background: rgba(15, 23, 42, 0.9);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .result {
+      margin-top: 4px;
+      padding: 10px;
+      border-radius: 10px;
+      background: radial-gradient(circle at top left, #034173, #020617);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      font-size: 0.9rem;
+    }
+
+    .result-title {
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .why-list {
+      margin-top: 6px;
+      padding-left: 16px;
+      font-size: 0.87rem;
+    }
+
+    .why-list li {
+      margin-bottom: 3px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.75rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      margin-left: 6px;
+    }
+
+    .winner-line {
+      margin-top: 4px;
+      font-size: 0.9rem;
+    }
+
+    .winner-line span.name {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .winner-line span.score {
+      color: var(--success);
+      font-weight: 500;
+    }
+
+    .optional-scenario {
+      margin-top: 10px;
+      font-size: 0.85rem;
+      border-radius: 10px;
+      border: 1px dashed rgba(148, 163, 184, 0.6);
+      padding: 8px 10px;
+      background: radial-gradient(
+        circle at right,
+        rgba(56, 189, 248, 0.18),
+        transparent 60%
+      );
+    }
+
+    .optional-scenario-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .optional-label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-muted);
+    }
+
+    .scenario-chip {
+      font-size: 0.78rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(56, 189, 248, 0.6);
+      color: var(--accent);
+    }
+
+    .empty-state {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-align: center;
+      padding: 18px 4px;
+    }
+
+    .footnote {
+      margin-top: 10px;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="card">
+      <h1>
+        <span class="icon">⚓</span>
+        Warship Duel Comparator
+      </h1>
+      <div class="subtitle">
+        Pick two ships from <strong>pre-WW2 to modern era</strong>. The app will
+        tell you which one comes out on top, why, and even spin a small
+        <strong>“optional” battle scenario</strong>.
+      </div>
+
+      <div class="layout">
+        <!-- LEFT: selection + stats -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Choose your contenders</div>
+          </div>
+
+          <div style="display: flex; gap: 10px; flex-direction: column">
+            <div>
+              <label for="shipA">Ship A</label>
+              <select id="shipA"></select>
+            </div>
+            <div>
+              <label for="shipB">Ship B</label>
+              <select id="shipB"></select>
+            </div>
+          </div>
+
+          <div class="ship-grid" id="shipInfoGrid"></div>
+
+          <div class="controls">
+            <button class="btn btn-primary" id="compareBtn">
+              🔍 Compare ships
+            </button>
+            <button class="btn btn-ghost" id="swapBtn">
+              🔁 Swap A ↔ B
+            </button>
+          </div>
+        </div>
+
+        <!-- RIGHT: comparison result -->
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">Outcome & Analysis</div>
+          </div>
+
+          <div id="comparisonStats"></div>
+          <div id="comparisonResult"></div>
+          <div id="scenarioBox"></div>
+
+          <div id="emptyState" class="empty-state">
+            Select two ships and hit <strong>“Compare ships”</strong> to see who
+            walks away and who sinks to the bottom.
+          </div>
+
+          <div class="footnote">
+            Scores are approximate and for fun, not a 100% realistic
+            simulation.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Simple warship dataset (you can expand this as much as you like) ---
+    const ships = [
+      {
+        id: "bismarck",
+        name: "KMS Bismarck",
+        nation: "Germany",
+        era: "WW2",
+        type: "Battleship",
+        displacement: 41700,
+        firepower: 9, // 1–10
+        armor: 9,
+        aa: 6,
+        speed: 7,
+        tech: 5,
+        description: "Famous German fast battleship, powerful guns and armor.",
+      },
+      {
+        id: "hood",
+        name: "HMS Hood",
+        nation: "United Kingdom",
+        era: "Pre-WW2 / WW2",
+        type: "Battlecruiser",
+        displacement: 42000,
+        firepower: 8,
+        armor: 6,
+        aa: 6,
+        speed: 8,
+        tech: 5,
+        description:
+          "British battlecruiser, fast but with weaker deck armor protection.",
+      },
+      {
+        id: "yamato",
+        name: "IJN Yamato",
+        nation: "Japan",
+        era: "WW2",
+        type: "Battleship",
+        displacement: 65000,
+        firepower: 10,
+        armor: 10,
+        aa: 7,
+        speed: 6,
+        tech: 5,
+        description:
+          "One of the largest battleships ever built, with massive 18.1\" guns.",
+      },
+      {
+        id: "iowa",
+        name: "USS Iowa",
+        nation: "USA",
+        era: "WW2 / Cold War",
+        type: "Fast Battleship",
+        displacement: 58000,
+        firepower: 9,
+        armor: 9,
+        aa: 9,
+        speed: 9,
+        tech: 7,
+        description:
+          "US fast battleship with excellent fire control and strong AA.",
+      },
+      {
+        id: "atlanta",
+        name: "USS Atlanta",
+        nation: "USA",
+        era: "WW2",
+        type: "Light Cruiser",
+        displacement: 7400,
+        firepower: 6,
+        armor: 4,
+        aa: 9,
+        speed: 8,
+        tech: 6,
+        description:
+          "AA-focused light cruiser, bristling with dual-purpose guns.",
+      },
+      {
+        id: "t45",
+        name: "HMS Daring (Type 45)",
+        nation: "United Kingdom",
+        era: "Modern",
+        type: "Air-defence Destroyer",
+        displacement: 8500,
+        firepower: 6,
+        armor: 3,
+        aa: 10,
+        speed: 8,
+        tech: 10,
+        description:
+          "Modern air-defence destroyer with advanced radar and missile systems.",
+      },
+      {
+        id: "arleigh",
+        name: "USS Arleigh Burke (Flight IIA)",
+        nation: "USA",
+        era: "Modern",
+        type: "Multi-role Destroyer",
+        displacement: 9200,
+        firepower: 8,
+        armor: 4,
+        aa: 9,
+        speed: 9,
+        tech: 9,
+        description:
+          "Versatile destroyer with VLS missiles, AEGIS radar and strong ASW.",
+      },
+      {
+        id: "slava",
+        name: "RFS Marshal Ustinov (Slava-class)",
+        nation: "Russia",
+        era: "Cold War / Modern",
+        type: "Missile Cruiser",
+        displacement: 11380,
+        firepower: 9,
+        armor: 5,
+        aa: 8,
+        speed: 8,
+        tech: 8,
+        description:
+          "Heavy missile cruiser designed to kill carrier groups at long range.",
+      },
+      {
+        id: "dreadnought",
+        name: "HMS Dreadnought",
+        nation: "United Kingdom",
+        era: "Pre-WW1",
+        type: "Battleship",
+        displacement: 18000,
+        firepower: 7,
+        armor: 7,
+        aa: 1,
+        speed: 7,
+        tech: 8,
+        description:
+          "The original all-big-gun battleship, revolutionary for its time.",
+      },
+      {
+        id: "virginia",
+        name: "USS Virginia (CGN-38)",
+        nation: "USA",
+        era: "Cold War",
+        type: "Nuclear Cruiser",
+        displacement: 11200,
+        firepower: 8,
+        armor: 4,
+        aa: 8,
+        speed: 9,
+        tech: 8,
+        description:
+          "Nuclear-powered cruiser with strong sensors and guided missiles.",
+      },
+    ];
+
+    // --- Utility helpers ---
+    const byId = (id) => document.getElementById(id);
+
+    const shipSelectA = byId("shipA");
+    const shipSelectB = byId("shipB");
+    const shipInfoGrid = byId("shipInfoGrid");
+    const compareBtn = byId("compareBtn");
+    const swapBtn = byId("swapBtn");
+    const comparisonStats = byId("comparisonStats");
+    const comparisonResult = byId("comparisonResult");
+    const scenarioBox = byId("scenarioBox");
+    const emptyState = byId("emptyState");
+
+    // Populate dropdowns
+    function populateSelects() {
+      const optionsHtml = ships
+        .map(
+          (ship) =>
+            `<option value="${ship.id}">${ship.name} (${ship.era}, ${ship.nation})</option>`
+        )
+        .join("");
+
+      shipSelectA.innerHTML = optionsHtml;
+      shipSelectB.innerHTML = optionsHtml;
+
+      // Set some sensible defaults
+      shipSelectA.value = "bismarck";
+      shipSelectB.value = "iowa";
+    }
+
+    function getShipById(id) {
+      return ships.find((s) => s.id === id) || null;
+    }
+
+    function renderShipInfo() {
+      const shipA = getShipById(shipSelectA.value);
+      const shipB = getShipById(shipSelectB.value);
+
+      const cardHtml = (ship, label) => {
+        if (!ship) return "";
+        return `
+          <div class="ship-card">
+            <div class="ship-name">${label}: ${ship.name}</div>
+            <div class="ship-meta">
+              ${ship.type} · ${ship.nation} · ${ship.era}
+            </div>
+            <div style="margin-bottom:4px;">
+              <span class="pill"><span>Disp.</span> ${ship.displacement.toLocaleString()} t</span>
+              <span class="pill"><span>Tech</span> ${ship.tech}/10</span>
+            </div>
+            <div style="font-size:0.8rem;color:var(--text-muted);">
+              ${ship.description}
+            </div>
+          </div>
+        `;
+      };
+
+      shipInfoGrid.innerHTML =
+        cardHtml(shipA, "A") + cardHtml(shipB, "B");
+    }
+
+    function computeScore(ship) {
+      // Basic scoring formula – you can tweak the weights
+      // Firepower & armor matter a lot, then AA/tech/speed
+      return (
+        ship.firepower * 2 +
+        ship.armor * 2 +
+        ship.aa * 1.5 +
+        ship.tech * 1.5 +
+        ship.speed * 1
+      );
+    }
+
+    function compareShips() {
+      const shipA = getShipById(shipSelectA.value);
+      const shipB = getShipById(shipSelectB.value);
+
+      if (!shipA || !shipB || shipA.id === shipB.id) {
+        comparisonStats.innerHTML = "";
+        comparisonResult.innerHTML = "";
+        scenarioBox.innerHTML = "";
+        emptyState.style.display = "block";
+        emptyState.textContent =
+          shipA && shipB && shipA.id === shipB.id
+            ? "Pick two different ships to compare. They can't duel themselves."
+            : "Select two ships to begin the comparison.";
+        return;
+      }
+
+      emptyState.style.display = "none";
+
+      const scoreA = computeScore(shipA);
+      const scoreB = computeScore(shipB);
+
+      const winner = scoreA > scoreB ? shipA : shipB;
+      const loser = winner === shipA ? shipB : shipA;
+      const winnerScore = Math.max(scoreA, scoreB);
+      const loserScore = Math.min(scoreA, scoreB);
+      const diff = Math.round((winnerScore - loserScore) * 10) / 10;
+
+      // Render stat comparison
+      const stats = [
+        { key: "firepower", label: "Firepower" },
+        { key: "armor", label: "Protection / Armor" },
+        { key: "aa", label: "Air Defence" },
+        { key: "speed", label: "Speed" },
+        { key: "tech", label: "Electronics / Tech" },
+      ];
+
+      const maxVal = 10;
+
+      const statRowsHtml = stats
+        .map((stat) => {
+          const aVal = shipA[stat.key];
+          const bVal = shipB[stat.key];
+          const aWidth = (aVal / maxVal) * 100;
+          const bWidth = (bVal / maxVal) * 100;
+
+          const winnerForThis =
+            aVal === bVal ? "tie" : aVal > bVal ? "A" : "B";
+
+          const aClass =
+            winnerForThis === "A"
+              ? "stat-value win"
+              : winnerForThis === "tie"
+              ? "stat-value"
+              : "stat-value lose";
+
+          const bClass =
+            winnerForThis === "B"
+              ? "stat-value win"
+              : winnerForThis === "tie"
+              ? "stat-value"
+              : "stat-value lose";
+
+          return `
+          <div class="stats-row">
+            <div class="stat-value ${aClass}">
+              ${shipA.name.split(" ")[1] || "A"}: ${aVal}
+            </div>
+            <div>
+              <div class="stat-label">${stat.label}</div>
+              <div class="stat-bar-wrapper">
+                <div class="stat-bar" style="width:${aWidth}%; opacity:0.5;"></div>
+                <div class="stat-bar" style="width:${bWidth}%; transform: translateY(-100%);"></div>
+              </div>
+            </div>
+            <div class="${bClass}">
+              ${shipB.name.split(" ")[1] || "B"}: ${bVal}
+            </div>
+          </div>
+        `;
+        })
+        .join("");
+
+      comparisonStats.innerHTML = statRowsHtml;
+
+      // Why is the winner better?
+      const reasons = [];
+
+      function addReason(statKey, label, flavourText) {
+        const aVal = shipA[statKey];
+        const bVal = shipB[statKey];
+        if (aVal === bVal) return;
+
+        const diffVal = Math.abs(aVal - bVal);
+        const leader = aVal > bVal ? shipA : shipB;
+        const trailer = leader === shipA ? shipB : shipA;
+
+        const intensity =
+          diffVal >= 3 ? "major edge" : diffVal >= 2 ? "clear edge" : "slight edge";
+
+        reasons.push(
+          `<strong>${leader.name}</strong> has a ${intensity} in <strong>${label}</strong> over <strong>${trailer.name}</strong> – ${flavourText(
+            leader,
+            trailer
+          )}`
+        );
+      }
+
+      addReason("firepower", "firepower", (lead, trail) =>
+        lead.type.includes("Cruiser") || lead.type.includes("Destroyer")
+          ? "its missile/secondary suite lets it hit hard at range."
+          : "its main battery hits harder and does more damage per salvo."
+      );
+
+      addReason("armor", "protection", (lead, trail) =>
+        lead.era.includes("Modern")
+          ? "its survivability and damage control are simply better."
+          : "it can soak up more punishment before going down."
+      );
+
+      addReason("aa", "air defence", (lead, trail) =>
+        lead.era.includes("Modern")
+          ? "its SAM systems and sensors make it far less vulnerable to air attack."
+          : "its AA layout gives it better odds against air strikes."
+      );
+
+      addReason("speed", "mobility", () =>
+        "it can dictate engagement distance, choose when to close or disengage."
+      );
+
+      addReason("tech", "sensors & electronics", (lead, trail) =>
+        lead.era.includes("Modern")
+          ? "it will usually see, track and shoot first in a real fight."
+          : "its fire-control and spotting give it a first-shot advantage."
+      );
+
+      const whyHtml =
+        reasons.length > 0
+          ? `<ul class="why-list"><li>${reasons.join("</li><li>")}</li></ul>`
+          : `<div style="margin-top:6px;">These two are extremely evenly matched on paper, so the fight would come down to crew, tactics and luck.</div>`;
+
+      comparisonResult.innerHTML = `
+        <div class="result">
+          <div class="result-title">
+            Verdict
+            <span class="badge">Approximate balance, not gospel</span>
+          </div>
+          <div class="winner-line">
+            Overall, <span class="name">${winner.name}</span> comes out ahead with a score of 
+            <span class="score">${winner === shipA ? scoreA.toFixed(1) : scoreB.toFixed(
+        1
+      )}</span>
+            vs 
+            <span class="score">${winner === shipA ? scoreB.toFixed(1) : scoreA.toFixed(
+        1
+      )}</span>.
+            Margin: <strong>${diff.toFixed(1)}</strong> points.
+          </div>
+          ${whyHtml}
+        </div>
+      `;
+
+      // Optional scenario generator
+      const scenario = buildScenario(winner, loser);
+      scenarioBox.innerHTML = `
+        <div class="optional-scenario">
+          <div class="optional-scenario-header">
+            <div class="optional-label">Optional</div>
+            <div class="scenario-chip">Engagement snapshot</div>
+          </div>
+          <div>${scenario}</div>
+        </div>
+      `;
+    }
+
+    function buildScenario(winner, loser) {
+      const ranges = [
+        "over-the-horizon missile range",
+        "long gun range",
+        "medium gun range",
+        "close knife-fight range",
+      ];
+      const weathers = [
+        "in rough seas and low clouds",
+        "on a clear, calm morning",
+        "in heavy rain with poor visibility",
+        "under the cover of night",
+      ];
+      const openings = [
+        "The first contact is made on radar",
+        "Lookouts spot the enemy’s silhouette on the horizon",
+        "A stray aircraft reports smoke plumes in the distance",
+        "Electronic support measures pick up hostile emissions",
+      ];
+
+      const rand = (arr) => arr[Math.floor(Math.random() * arr.length)];
+
+      const eraMix = `${winner.era} vs ${loser.era}`.toLowerCase();
+
+      if (eraMix.includes("modern") && eraMix.includes("ww2")) {
+        return `
+          ${rand(openings)} at ${rand(
+          ranges
+        )} as the modern sensors aboard <strong>${winner.name}</strong> lock onto the older silhouette of <strong>${
+          loser.name
+        }</strong>. Within minutes, a spread of guided missiles arcs in from beyond visual range. 
+          The older ship’s guns never get a meaningful chance to reply – damage control fights hard, but by the time the smoke clears, <strong>${
+            winner.name
+          }</strong> is still able to sail away, while <strong>${
+          loser.name
+        }</strong> is a burning wreck taking on water.
+        `;
+      }
+
+      if (winner.type.includes("Battleship") && loser.type.includes("Battleship")) {
+        return `
+          At ${rand(
+            ranges
+          )} in ${rand(weathers)}, the two battleships open fire. Shell splashes climb like towers around both hulls as salvos walk closer and closer. 
+          <strong>${winner.name}</strong> finds the range first and starts landing heavy hits, its shells punching through armor and wrecking turrets. 
+          <strong>${loser.name}</strong> manages a few punishing blows in return, but progressive flooding and fires slow her down. Eventually she falls out of line, 
+          listing and burning, while <strong>${winner.name}</strong> maintains enough speed and gunpower to break off on her own terms.
+        `;
+      }
+
+      if (winner.type.includes("Destroyer") || winner.type.includes("Cruiser")) {
+        return `
+          The duel unfolds at ${rand(
+            ranges
+          )}. <strong>${winner.name}</strong> uses its superior sensors and mobility to stay just outside the sweet spot of <strong>${
+          loser.name
+        }</strong>. 
+          Guided weapons and rapid-fire guns steadily strip away the loser’s radar, launchers and vital systems. 
+          With its combat systems blinded and decks torn open, <strong>${
+            loser.name
+          }</strong> can no longer effectively fight back, forcing survivors to abandon ship as <strong>${
+          winner.name
+        }</strong> slips back into the haze.
+        `;
+      }
+
+      // Generic fallback
+      return `
+        In ${rand(
+          weathers
+        )} at ${rand(ranges)}, both captains commit to the fight. Salvos are exchanged, radar scopes bloom with returns, and the sea between them fills with shell splashes and smoke. 
+        Over the next hour, <strong>${winner.name}</strong> slowly grinds down <strong>${
+        loser.name
+      }</strong>, exploiting its stronger points again and again. 
+        When the last echoes of gunfire fade, ${loser.name} is dead in the water and sinking by the bow, while <strong>${winner.name}</strong>, scarred but victorious, turns away from the burning wreckage.
+      `;
+    }
+
+    // Swap ships
+    function swapShips() {
+      const temp = shipSelectA.value;
+      shipSelectA.value = shipSelectB.value;
+      shipSelectB.value = temp;
+      renderShipInfo();
+      compareShips();
+    }
+
+    // Init
+    populateSelects();
+    renderShipInfo();
+    compareShips();
+
+    shipSelectA.addEventListener("change", () => {
+      renderShipInfo();
+    });
+    shipSelectB.addEventListener("change", () => {
+      renderShipInfo();
+    });
+
+    compareBtn.addEventListener("click", compareShips);
+    swapBtn.addEventListener("click", swapShips);
+  </script>
+</body>
+</html>
