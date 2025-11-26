@@ -424,7 +424,8 @@
 
   <script>
     // --- Simple warship dataset (you can expand this as much as you like) ---
-    const ships = [
+      const ships = [
+      // --- Battleships / Cruisers / Big boys ---
       {
         id: "bismarck",
         name: "KMS Bismarck",
@@ -432,335 +433,14 @@
         era: "WW2",
         type: "Battleship",
         displacement: 41700,
-        firepower: 9, // 1–10
+        firepower: 9,
         armor: 9,
         aa: 6,
         speed: 7,
         tech: 5,
-        description: "Famous German fast battleship, powerful guns and armor.",
+        description:
+          "Famous German fast battleship, powerful guns and armor.",
       },
-        {
-    id: "litchfield",
-    name: "USS Litchfield (DD-336)",
-    nation: "USA",
-    era: "Interwar",
-    type: "Destroyer",
-    displacement: 1215,
-    firepower: 4,   // 4x4\" guns + torps
-    armor: 1,
-    aa: 2,
-    speed: 9,       // ~35 kts
-    tech: 3,
-    description: "Clemson-class destroyer from the interwar US fleet – fast, light and torpedo-heavy but lightly protected."
-  },
-  {
-    id: "barker",
-    name: "USS Barker (DD-213)",
-    nation: "USA",
-    era: "Pre-WW2 / WW2",
-    type: "Destroyer",
-    displacement: 1270,
-    firepower: 4,
-    armor: 1,
-    aa: 3,          // some AA refits
-    speed: 9,
-    tech: 3,
-    description: "Another Clemson-class boat that saw early WW2 service, with modest gun power and decent torpedo armament."
-  },
-  {
-    id: "aylwin",
-    name: "USS Aylwin (DD-355)",
-    nation: "USA",
-    era: "Pre-WW2 / WW2",
-    type: "Destroyer",
-    displacement: 1565,
-    firepower: 5,   // 5x5\" guns, 8 tubes
-    armor: 2,
-    aa: 3,
-    speed: 9,
-    tech: 4,
-    description: "Farragut-class destroyer – a step up from the flush-deckers with 5-inch guns and improved handling."
-  },
-  {
-    id: "bagley",
-    name: "USS Bagley (DD-386)",
-    nation: "USA",
-    era: "WW2",
-    type: "Destroyer",
-    displacement: 1620,
-    firepower: 6,   // 4x5\" but 16 torpedo tubes – big torp alpha
-    armor: 2,
-    aa: 4,
-    speed: 9,
-    tech: 4,
-    description: "Bagley-class with a ridiculous torpedo battery – not the heaviest guns, but brutal in a torpedo ambush."
-  },
-  {
-    id: "fletcher",
-    name: "USS Fletcher (DD-445)",
-    nation: "USA",
-    era: "WW2",
-    type: "Destroyer",
-    displacement: 2500,
-    firepower: 7,   // 5x5\" DP + 10 tubes
-    armor: 3,
-    aa: 5,
-    speed: 9,
-    tech: 6,
-    description: "Legendary Fletcher-class destroyer – balanced package of guns, AA, torpedoes and survivability."
-  },
-  {
-    id: "porter",
-    name: "USS Porter (DD-356)",
-    nation: "USA",
-    era: "Pre-WW2 / WW2",
-    type: "Destroyer Leader",
-    displacement: 1850,
-    firepower: 7,   // 8x5\" in twins
-    armor: 2,
-    aa: 4,
-    speed: 8,
-    tech: 5,
-    description: "Porter-class destroyer leader with eight 5-inch guns – nasty gunfighter but less focused on torpedoes."
-  },
-  {
-    id: "somers",
-    name: "USS Somers (DD-381)",
-    nation: "USA",
-    era: "WW2",
-    type: "Destroyer",
-    displacement: 1850,
-    firepower: 7,   // 8x5\" + 12 tubes
-    armor: 2,
-    aa: 4,
-    speed: 9,
-    tech: 5,
-    description: "Somers-class combines heavy 5-inch gun broadsides with a strong torpedo battery – dangerous surface combatant."
-  },
-  {
-    id: "sumner",
-    name: "USS Sumner (DD-692)",
-    nation: "USA",
-    era: "WW2 / Early Cold War",
-    type: "Destroyer",
-    displacement: 2200,
-    firepower: 7,   // 6x5\" DP, fewer torps but better AA
-    armor: 3,
-    aa: 7,
-    speed: 9,
-    tech: 7,
-    description: "Allen M. Sumner-class – dual-purpose guns and heavy AA make her a brutal escort and surface fighter."
-  },
-  {
-    id: "gearing",
-    name: "USS Gearing (DD-710)",
-    nation: "USA",
-    era: "WW2 / Cold War",
-    type: "Destroyer",
-    displacement: 2600,
-    firepower: 7,
-    armor: 3,
-    aa: 8,
-    speed: 9,
-    tech: 8,
-    description: "Gearing-class stretches the Sumner hull with even better endurance and modernized AA and sensors – top-tier gun destroyer for her era."
-  },
-  {
-    id: "mitscher",
-    name: "USS Mitscher (DL-2)",
-    nation: "USA",
-    era: "Cold War",
-    type: "Destroyer Leader",
-    displacement: 3600,
-    firepower: 6,   // fewer big guns but strong ASW/AA suite
-    armor: 3,
-    aa: 8,
-    speed: 9,
-    tech: 9,
-    description: "Large Cold War destroyer leader with advanced sensors and strong AA/ASW focus rather than pure gun dueling."
-  },
-  {
-    id: "v_w",
-    name: "HMS Veteran (V & W-class)",
-    nation: "United Kingdom",
-    era: "Pre-WW2 / WW2",
-    type: "Destroyer",
-    displacement: 1188,
-    firepower: 4,   // older 4.7\" guns, light AA
-    armor: 1,
-    aa: 3,
-    speed: 9,
-    tech: 3,
-    description: "Representative V & W-class destroyer – a WW1 design that soldiered on into WW2 as an escort and workhorse."
-  },
-  {
-    id: "jervis",
-    name: "HMS Jervis (J-class)",
-    nation: "United Kingdom",
-    era: "WW2",
-    type: "Destroyer",
-    displacement: 1690,
-    firepower: 6,   // 6x4.7\" and decent torpedoes
-    armor: 2,
-    aa: 4,
-    speed: 9,
-    tech: 5,
-    description: "J-class destroyer with a strong gun and torpedo armament, heavily used in the Mediterranean."
-  },
-  {
-    id: "cossack",
-    name: "HMS Cossack (Tribal-class)",
-    nation: "United Kingdom",
-    era: "WW2",
-    type: "Destroyer",
-    displacement: 1850,
-    firepower: 7,   // 8x4.7\" guns, gun-focused
-    armor: 3,
-    aa: 5,
-    speed: 9,
-    tech: 6,
-    description: "Tribal-class leader with eight quick-firing guns, built as a destroyer-killer more than a torpedo boat."
-  },
-  {
-    id: "barfleur",
-    name: "HMS Barfleur (Battle-class)",
-    nation: "United Kingdom",
-    era: "Late WW2 / Early Cold War",
-    type: "Destroyer",
-    displacement: 2340,
-    firepower: 7,   // improved dual-purpose guns
-    armor: 3,
-    aa: 7,
-    speed: 9,
-    tech: 7,
-    description: "Battle-class destroyer – a late-war AA and fleet escort design with modern fire control and radars."
-  },
-  {
-    id: "fubuki",
-    name: "IJN Fubuki",
-    nation: "Japan",
-    era: "Pre-WW2 / WW2",
-    type: "Destroyer",
-    displacement: 1750,
-    firepower: 6,   // 6x5\" and strong torps
-    armor: 2,
-    aa: 2,
-    speed: 9,
-    tech: 4,
-    description: "Revolutionary Japanese destroyer with heavy guns and Long Lance torpedoes, but weak AA and limited sensors."
-  },
-  {
-    id: "kagero",
-    name: "IJN Kagero",
-    nation: "Japan",
-    era: "WW2",
-    type: "Destroyer",
-    displacement: 2500,
-    firepower: 7,   // Long Lances + good guns
-    armor: 2,
-    aa: 3,
-    speed: 9,
-    tech: 5,
-    description: "Kagero-class oceanic destroyer – lethal torpedo armament and solid guns, but still vulnerable to air attack."
-  },
-  {
-    id: "akizuki",
-    name: "IJN Akizuki",
-    nation: "Japan",
-    era: "WW2",
-    type: "AA Destroyer",
-    displacement: 2740,
-    firepower: 7,   // 8x100mm DP
-    armor: 3,
-    aa: 6,
-    speed: 8,
-    tech: 6,
-    description: "AA-focused destroyer with eight dual-purpose guns, good at screening against aircraft and surface threats alike."
-  },
-  {
-    id: "yugumo",
-    name: "IJN Yugumo",
-    nation: "Japan",
-    era: "WW2",
-    type: "Destroyer",
-    displacement: 2110,
-    firepower: 7,
-    armor: 2,
-    aa: 3,
-    speed: 9,
-    tech: 5,
-    description: "Yugumo-class is an evolution of Kagero – powerful torpedoes and guns, still hampered by poor AA and radar."
-  },
-  {
-    id: "z20",
-    name: "Z20 Karl Galster (Type 1936)",
-    nation: "Germany",
-    era: "WW2",
-    type: "Destroyer",
-    displacement: 2475,
-    firepower: 6,   // 5x5\"-class guns
-    armor: 2,
-    aa: 4,
-    speed: 9,
-    tech: 5,
-    description: "Type 1936 destroyer with heavy guns and good speed, but stability and seakeeping issues in rough seas."
-  },
-  {
-    id: "z23",
-    name: "Z23 (Type 1936A 'Narvik')",
-    nation: "Germany",
-    era: "WW2",
-    type: "Destroyer",
-    displacement: 2630,
-    firepower: 7,   // 150mm main guns
-    armor: 2,
-    aa: 4,
-    speed: 9,
-    tech: 5,
-    description: "Narvik-class destroyer with cruiser-calibre guns that hit hard but have a slower rate of fire."
-  },
-  {
-    id: "gnevny",
-    name: "Gnevny-class Destroyer",
-    nation: "USSR",
-    era: "Pre-WW2 / WW2",
-    type: "Destroyer",
-    displacement: 1611,
-    firepower: 6,   // 4x130mm guns, decent torps
-    armor: 2,
-    aa: 2,
-    speed: 9,
-    tech: 4,
-    description: "Early Soviet ocean-going destroyer with strong 130mm guns but weak AA and limited electronics."
-  },
-  {
-    id: "tashkent",
-    name: "Tashkent ('Blue Cruiser')",
-    nation: "USSR",
-    era: "WW2",
-    type: "Destroyer Leader",
-    displacement: 2800,
-    firepower: 7,   // 3x2 130mm + strong torps
-    armor: 3,
-    aa: 4,
-    speed: 10,      // very fast
-    tech: 5,
-    description: "Italian-built leader nicknamed the 'Blue Cruiser' – extremely fast with heavy gun and torpedo armament."
-  },
-  {
-    id: "soldati",
-    name: "RN Soldati (Soldati-class)",
-    nation: "Italy",
-    era: "WW2",
-    type: "Destroyer",
-    displacement: 1850,
-    firepower: 6,   // 120mm guns + torps
-    armor: 2,
-    aa: 3,
-    speed: 9,
-    tech: 4,
-    description: "Italian Soldati-class destroyer – fast and stylish with good guns and torpedoes, but modest AA protection."
-  },
       {
         id: "hood",
         name: "HMS Hood",
@@ -896,6 +576,365 @@
         description:
           "Nuclear-powered cruiser with strong sensors and guided missiles.",
       },
+
+      // --- US Destroyers ---
+      {
+        id: "litchfield",
+        name: "USS Litchfield (DD-336)",
+        nation: "USA",
+        era: "Interwar",
+        type: "Destroyer",
+        displacement: 1215,
+        firepower: 4,
+        armor: 1,
+        aa: 2,
+        speed: 9,
+        tech: 3,
+        description:
+          "Clemson-class destroyer from the interwar US fleet – fast, light and torpedo-heavy but lightly protected.",
+      },
+      {
+        id: "barker",
+        name: "USS Barker (DD-213)",
+        nation: "USA",
+        era: "Pre-WW2 / WW2",
+        type: "Destroyer",
+        displacement: 1270,
+        firepower: 4,
+        armor: 1,
+        aa: 3,
+        speed: 9,
+        tech: 3,
+        description:
+          "Another Clemson-class boat that saw early WW2 service, with modest gun power and decent torpedo armament.",
+      },
+      {
+        id: "aylwin",
+        name: "USS Aylwin (DD-355)",
+        nation: "USA",
+        era: "Pre-WW2 / WW2",
+        type: "Destroyer",
+        displacement: 1565,
+        firepower: 5,
+        armor: 2,
+        aa: 3,
+        speed: 9,
+        tech: 4,
+        description:
+          "Farragut-class destroyer – a step up from the flush-deckers with 5-inch guns and improved handling.",
+      },
+      {
+        id: "bagley",
+        name: "USS Bagley (DD-386)",
+        nation: "USA",
+        era: "WW2",
+        type: "Destroyer",
+        displacement: 1620,
+        firepower: 6,
+        armor: 2,
+        aa: 4,
+        speed: 9,
+        tech: 4,
+        description:
+          "Bagley-class with a ridiculous torpedo battery – not the heaviest guns, but brutal in a torpedo ambush.",
+      },
+      {
+        id: "fletcher",
+        name: "USS Fletcher (DD-445)",
+        nation: "USA",
+        era: "WW2",
+        type: "Destroyer",
+        displacement: 2500,
+        firepower: 7,
+        armor: 3,
+        aa: 5,
+        speed: 9,
+        tech: 6,
+        description:
+          "Legendary Fletcher-class destroyer – balanced package of guns, AA, torpedoes and survivability.",
+      },
+      {
+        id: "porter",
+        name: "USS Porter (DD-356)",
+        nation: "USA",
+        era: "Pre-WW2 / WW2",
+        type: "Destroyer Leader",
+        displacement: 1850,
+        firepower: 7,
+        armor: 2,
+        aa: 4,
+        speed: 8,
+        tech: 5,
+        description:
+          "Porter-class destroyer leader with eight 5-inch guns – nasty gunfighter but less focused on torpedoes.",
+      },
+      {
+        id: "somers",
+        name: "USS Somers (DD-381)",
+        nation: "USA",
+        era: "WW2",
+        type: "Destroyer",
+        displacement: 1850,
+        firepower: 7,
+        armor: 2,
+        aa: 4,
+        speed: 9,
+        tech: 5,
+        description:
+          "Somers-class combines heavy 5-inch gun broadsides with a strong torpedo battery – dangerous surface combatant.",
+      },
+      {
+        id: "sumner",
+        name: "USS Sumner (DD-692)",
+        nation: "USA",
+        era: "WW2 / Early Cold War",
+        type: "Destroyer",
+        displacement: 2200,
+        firepower: 7,
+        armor: 3,
+        aa: 7,
+        speed: 9,
+        tech: 7,
+        description:
+          "Allen M. Sumner-class – dual-purpose guns and heavy AA make her a brutal escort and surface fighter.",
+      },
+      {
+        id: "gearing",
+        name: "USS Gearing (DD-710)",
+        nation: "USA",
+        era: "WW2 / Cold War",
+        type: "Destroyer",
+        displacement: 2600,
+        firepower: 7,
+        armor: 3,
+        aa: 8,
+        speed: 9,
+        tech: 8,
+        description:
+          "Gearing-class stretches the Sumner hull with even better endurance and modernized AA and sensors – top-tier gun destroyer for her era.",
+      },
+      {
+        id: "mitscher",
+        name: "USS Mitscher (DL-2)",
+        nation: "USA",
+        era: "Cold War",
+        type: "Destroyer Leader",
+        displacement: 3600,
+        firepower: 6,
+        armor: 3,
+        aa: 8,
+        speed: 9,
+        tech: 9,
+        description:
+          "Large Cold War destroyer leader with advanced sensors and strong AA/ASW focus rather than pure gun dueling.",
+      },
+
+      // --- UK Destroyers ---
+      {
+        id: "v_w",
+        name: "HMS Veteran (V & W-class)",
+        nation: "United Kingdom",
+        era: "Pre-WW2 / WW2",
+        type: "Destroyer",
+        displacement: 1188,
+        firepower: 4,
+        armor: 1,
+        aa: 3,
+        speed: 9,
+        tech: 3,
+        description:
+          "Representative V & W-class destroyer – a WW1 design that soldiered on into WW2 as an escort and workhorse.",
+      },
+      {
+        id: "jervis",
+        name: "HMS Jervis (J-class)",
+        nation: "United Kingdom",
+        era: "WW2",
+        type: "Destroyer",
+        displacement: 1690,
+        firepower: 6,
+        armor: 2,
+        aa: 4,
+        speed: 9,
+        tech: 5,
+        description:
+          "J-class destroyer with a strong gun and torpedo armament, heavily used in the Mediterranean.",
+      },
+      {
+        id: "cossack",
+        name: "HMS Cossack (Tribal-class)",
+        nation: "United Kingdom",
+        era: "WW2",
+        type: "Destroyer",
+        displacement: 1850,
+        firepower: 7,
+        armor: 3,
+        aa: 5,
+        speed: 9,
+        tech: 6,
+        description:
+          "Tribal-class leader with eight quick-firing guns, built as a destroyer-killer more than a torpedo boat.",
+      },
+      {
+        id: "barfleur",
+        name: "HMS Barfleur (Battle-class)",
+        nation: "United Kingdom",
+        era: "Late WW2 / Early Cold War",
+        type: "Destroyer",
+        displacement: 2340,
+        firepower: 7,
+        armor: 3,
+        aa: 7,
+        speed: 9,
+        tech: 7,
+        description:
+          "Battle-class destroyer – a late-war AA and fleet escort design with modern fire control and radars.",
+      },
+
+      // --- Japanese Destroyers ---
+      {
+        id: "fubuki",
+        name: "IJN Fubuki",
+        nation: "Japan",
+        era: "Pre-WW2 / WW2",
+        type: "Destroyer",
+        displacement: 1750,
+        firepower: 6,
+        armor: 2,
+        aa: 2,
+        speed: 9,
+        tech: 4,
+        description:
+          "Revolutionary Japanese destroyer with heavy guns and Long Lance torpedoes, but weak AA and limited sensors.",
+      },
+      {
+        id: "kagero",
+        name: "IJN Kagero",
+        nation: "Japan",
+        era: "WW2",
+        type: "Destroyer",
+        displacement: 2500,
+        firepower: 7,
+        armor: 2,
+        aa: 3,
+        speed: 9,
+        tech: 5,
+        description:
+          "Kagero-class oceanic destroyer – lethal torpedo armament and solid guns, but still vulnerable to air attack.",
+      },
+      {
+        id: "akizuki",
+        name: "IJN Akizuki",
+        nation: "Japan",
+        era: "WW2",
+        type: "AA Destroyer",
+        displacement: 2740,
+        firepower: 7,
+        armor: 3,
+        aa: 6,
+        speed: 8,
+        tech: 6,
+        description:
+          "AA-focused destroyer with eight dual-purpose guns, good at screening against aircraft and surface threats alike.",
+      },
+      {
+        id: "yugumo",
+        name: "IJN Yugumo",
+        nation: "Japan",
+        era: "WW2",
+        type: "Destroyer",
+        displacement: 2110,
+        firepower: 7,
+        armor: 2,
+        aa: 3,
+        speed: 9,
+        tech: 5,
+        description:
+          "Yugumo-class is an evolution of Kagero – powerful torpedoes and guns, still hampered by poor AA and radar.",
+      },
+
+      // --- German Destroyers ---
+      {
+        id: "z20",
+        name: "Z20 Karl Galster (Type 1936)",
+        nation: "Germany",
+        era: "WW2",
+        type: "Destroyer",
+        displacement: 2475,
+        firepower: 6,
+        armor: 2,
+        aa: 4,
+        speed: 9,
+        tech: 5,
+        description:
+          "Type 1936 destroyer with heavy guns and good speed, but stability and seakeeping issues in rough seas.",
+      },
+      {
+        id: "z23",
+        name: "Z23 (Type 1936A 'Narvik')",
+        nation: "Germany",
+        era: "WW2",
+        type: "Destroyer",
+        displacement: 2630,
+        firepower: 7,
+        armor: 2,
+        aa: 4,
+        speed: 9,
+        tech: 5,
+        description:
+          "Narvik-class destroyer with cruiser-calibre guns that hit hard but have a slower rate of fire.",
+      },
+
+      // --- Soviet Destroyers ---
+      {
+        id: "gnevny",
+        name: "Gnevny-class Destroyer",
+        nation: "USSR",
+        era: "Pre-WW2 / WW2",
+        type: "Destroyer",
+        displacement: 1611,
+        firepower: 6,
+        armor: 2,
+        aa: 2,
+        speed: 9,
+        tech: 4,
+        description:
+          "Early Soviet ocean-going destroyer with strong 130mm guns but weak AA and limited electronics.",
+      },
+      {
+        id: "tashkent",
+        name: "Tashkent ('Blue Cruiser')",
+        nation: "USSR",
+        era: "WW2",
+        type: "Destroyer Leader",
+        displacement: 2800,
+        firepower: 7,
+        armor: 3,
+        aa: 4,
+        speed: 10,
+        tech: 5,
+        description:
+          "Italian-built leader nicknamed the 'Blue Cruiser' – extremely fast with heavy gun and torpedo armament.",
+      },
+
+      // --- Italian Destroyer ---
+      {
+        id: "soldati",
+        name: "RN Soldati (Soldati-class)",
+        nation: "Italy",
+        era: "WW2",
+        type: "Destroyer",
+        displacement: 1850,
+        firepower: 6,
+        armor: 2,
+        aa: 3,
+        speed: 9,
+        tech: 4,
+        description:
+          "Italian Soldati-class destroyer – fast and stylish with good guns and torpedoes, but modest AA protection.",
+      },
+    ];
+
     ];
 
     // --- Utility helpers ---
