@@ -165,49 +165,6 @@
       opacity: 0.7;
     }
 
-    .stats-row {
-      display: grid;
-      grid-template-columns: 1fr 1.2fr 1fr;
-      gap: 8px;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-
-    .stat-label {
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    .stat-bar-wrapper {
-      height: 6px;
-      background: rgba(15, 23, 42, 0.9);
-      border-radius: 999px;
-      overflow: hidden;
-      border: 1px solid rgba(30, 64, 175, 0.6);
-    }
-
-    .stat-bar {
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent-soft), var(--accent));
-      width: 0%;
-      transition: width 0.2s ease-out;
-    }
-
-    .stat-value {
-      font-size: 0.8rem;
-      text-align: right;
-    }
-
-    .stat-value.win {
-      color: var(--success);
-      font-weight: 600;
-    }
-
-    .stat-value.lose {
-      color: var(--danger);
-      opacity: 0.8;
-    }
-
     .controls {
       margin-top: 10px;
       display: flex;
@@ -353,6 +310,50 @@
       color: var(--text-muted);
       text-align: right;
     }
+
+    /* IMAGE STUFF */
+
+    .duel-images {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .duel-image-card {
+      background: #020617;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      padding: 6px;
+      font-size: 0.8rem;
+    }
+
+    .duel-image-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .ship-image-wrapper {
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+    }
+
+    .ship-image {
+      width: 100%;
+      display: block;
+      object-fit: cover;
+      max-height: 160px;
+    }
+
+    @media (max-width: 850px) {
+      .duel-images {
+        grid-template-columns: 1fr;
+      }
+    }
   </style>
 </head>
 <body>
@@ -404,6 +405,9 @@
             <div class="panel-title">Outcome & Analysis</div>
           </div>
 
+          <!-- new image-vs-image block -->
+          <div id="duelImages" class="duel-images"></div>
+
           <div id="comparisonStats"></div>
           <div id="comparisonResult"></div>
           <div id="scenarioBox"></div>
@@ -423,8 +427,9 @@
   </div>
 
   <script>
-    // --- Simple warship dataset (you can expand this as much as you like) ---
-      const ships = [
+    // --- Warship dataset ---
+    // If you ever get real pictures, add: image: "images/bismarck.jpg" etc.
+    const ships = [
       // --- Battleships / Cruisers / Big boys ---
       {
         id: "bismarck",
@@ -931,9 +936,10 @@
         speed: 9,
         tech: 4,
         description:
-          "Italian Soldati-class destroyer – fast and stylish with good guns and torpedoes, but modest AA protection."
+          "Italian Soldati-class destroyer – fast and stylish with good guns and torpedoes, but modest AA protection.",
       },
     ];
+
     // --- Utility helpers ---
     const byId = (id) => document.getElementById(id);
 
@@ -946,6 +952,7 @@
     const comparisonResult = byId("comparisonResult");
     const scenarioBox = byId("scenarioBox");
     const emptyState = byId("emptyState");
+    const duelImages = byId("duelImages");
 
     // Populate dropdowns
     function populateSelects() {
@@ -959,7 +966,7 @@
       shipSelectA.innerHTML = optionsHtml;
       shipSelectB.innerHTML = optionsHtml;
 
-      // Set some sensible defaults
+      // defaults
       shipSelectA.value = "bismarck";
       shipSelectB.value = "iowa";
     }
@@ -991,13 +998,31 @@
         `;
       };
 
-      shipInfoGrid.innerHTML =
-        cardHtml(shipA, "A") + cardHtml(shipB, "B");
+      shipInfoGrid.innerHTML = cardHtml(shipA, "A") + cardHtml(shipB, "B");
+
+      // image vs image
+      const imageCard = (ship, label) => {
+        if (!ship) return "";
+        const imgSrc =
+          ship.image ||
+          `https://via.placeholder.com/400x200?text=${encodeURIComponent(
+            ship.name
+          )}`;
+        return `
+          <div class="duel-image-card">
+            <div class="duel-image-label">${label}</div>
+            <div class="ship-image-wrapper">
+              <img src="${imgSrc}" alt="${ship.name}" class="ship-image" />
+            </div>
+          </div>
+        `;
+      };
+
+      duelImages.innerHTML = imageCard(shipA, "Ship A") + imageCard(shipB, "Ship B");
     }
 
     function computeScore(ship) {
-      // Basic scoring formula – you can tweak the weights
-      // Firepower & armor matter a lot, then AA/tech/speed
+      // Firepower & armor matter most, then AA/tech/speed
       return (
         ship.firepower * 2 +
         ship.armor * 2 +
@@ -1034,7 +1059,7 @@
       const loserScore = Math.min(scoreA, scoreB);
       const diff = Math.round((winnerScore - loserScore) * 10) / 10;
 
-      // Render stat comparison
+      // Stat comparison
       const stats = [
         { key: "firepower", label: "Firepower" },
         { key: "armor", label: "Protection / Armor" },
@@ -1114,19 +1139,19 @@
         );
       }
 
-      addReason("firepower", "firepower", (lead, trail) =>
+      addReason("firepower", "firepower", (lead) =>
         lead.type.includes("Cruiser") || lead.type.includes("Destroyer")
           ? "its missile/secondary suite lets it hit hard at range."
           : "its main battery hits harder and does more damage per salvo."
       );
 
-      addReason("armor", "protection", (lead, trail) =>
+      addReason("armor", "protection", (lead) =>
         lead.era.includes("Modern")
           ? "its survivability and damage control are simply better."
           : "it can soak up more punishment before going down."
       );
 
-      addReason("aa", "air defence", (lead, trail) =>
+      addReason("aa", "air defence", (lead) =>
         lead.era.includes("Modern")
           ? "its SAM systems and sensors make it far less vulnerable to air attack."
           : "its AA layout gives it better odds against air strikes."
@@ -1136,7 +1161,7 @@
         "it can dictate engagement distance, choose when to close or disengage."
       );
 
-      addReason("tech", "sensors & electronics", (lead, trail) =>
+      addReason("tech", "sensors & electronics", (lead) =>
         lead.era.includes("Modern")
           ? "it will usually see, track and shoot first in a real fight."
           : "its fire-control and spotting give it a first-shot advantage."
